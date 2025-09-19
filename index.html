@@ -379,6 +379,9 @@
                   </select>
                </div>
                <div><label for="dtProduto">Prontidão do Pedido</label><input type="text" id="dtProduto"></div>
+                <div><label for="quarentena">Quarentena</label><input type="text" id="quarentena">
+        </div>
+
                <div><label for="observacoes">Observações</label><input type="text" id="observacoes"></div>
             </form>
          </div>
@@ -399,6 +402,7 @@
                      <th>Instrução de Embarque</th>
                      <th>Status Produção</th>
                      <th>Prontidão do Pedido<button id="btnOrdenarDtProduto" style="background:none;border:none;color:white;cursor:pointer;">🔄</button></th>
+                     <th>Quarentena</th>
                      <th>Observações</th>
                      <th>Ação</th>
                   </tr>
@@ -454,22 +458,24 @@
              lista.forEach(r => {
                  const tr = document.createElement("tr");
                  tr.innerHTML = `
-                     <td>${r.invoice || ""}</td>
-                     <td>${r.po || ""}</td>
-                     <td>${r.dtFaturamento || ""}</td>
-                     <td>${r.dtCarregamento || ""}</td>
-                     <td>${r.draft || ""}</td>
-                     <td>${r.vgm || ""}</td>
-                     <td>${r.carga || ""}</td>
-                     <td>${r.embarque || ""}</td>
-                     <td>${r.status || ""}</td>
-                     <td>${r.booking || ""}</td>
-                     <td>${r.instrucao || ""}</td>
-                     <td>${r.producao || ""}</td>
-                     <td>${r.dtProduto || ""}</td>
-                     <td>${r.observacoes || ""}</td>
-                     <td><button onclick="editarInvoice('${(r.invoice || "").replace(/'/g, "\\'")}')">✏️ Editar</button></td>
-                 `;
+                    <td>${r.invoice || ""}</td>
+                    <td>${r.po || ""}</td>
+                    <td>${r.dtFaturamento || ""}</td>
+                    <td>${r.dtCarregamento || ""}</td>
+                    <td>${r.draft || ""}</td>
+                    <td>${r.vgm || ""}</td>
+                    <td>${r.carga || ""}</td>
+                    <td>${r.embarque || ""}</td>
+                    <td>${r.status || ""}</td>
+                    <td>${r.booking || ""}</td>
+                    <td>${r.instrucao || ""}</td>
+                    <td>${r.producao || ""}</td>
+                    <td>${r.dtProduto || ""}</td>
+                    <td>${r.quarentena || ""}</td> <!-- nova coluna -->
+                    <td>${r.observacoes || ""}</td>
+                    <td><button onclick="editarInvoice('${(r.invoice || "").replace(/'/g, "\\'")}')">✏️ Editar</button></td>
+                `;
+
                  tbody.appendChild(tr);
              });
          }
@@ -562,9 +568,9 @@
              const invoice = document.getElementById("invoice").value.trim();
              if (!invoice) return alert("Preencha o número da INVOICE.");
          
-             const obj = {
+            const obj = {
                 invoice,
-                po: document.getElementById("po").value || "", // <-- aqui
+                po: document.getElementById("po").value || "",
                 dtFaturamento: document.getElementById("dtFaturamento").value || "",
                 dtCarregamento: document.getElementById("dtCarregamento").value || "",
                 draft: document.getElementById("draft").value || "",
@@ -576,6 +582,7 @@
                 instrucao: document.getElementById("instrucao").value || "",
                 producao: document.getElementById("producao").value || "",
                 dtProduto: document.getElementById("dtProduto").value || "",
+                quarentena: document.getElementById("quarentena").value || "", // <-- NOVO
                 observacoes: document.getElementById("observacoes").value || "",
             };
          
@@ -645,6 +652,7 @@
              document.getElementById("instrucao").value = registro.instrucao || "";
              document.getElementById("producao").value = registro.producao || "";
              document.getElementById("dtProduto").value = registro.dtProduto || "";
+             document.getElementById("quarentena").value = registro.quarentena || "";
              document.getElementById("observacoes").value = registro.observacoes || "";
          
              renderTabela([registro]);
