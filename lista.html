@@ -160,7 +160,6 @@
          <button class="btn-excel" id="btnExcel">📄 Exportar Excel</button>
          <button class="btn-voltar" onclick="window.location.href='valor.html'">Consultar Valor ➡</button>
       </div>
-
       <!-- Área da tabela -->
       <div class="table-container">
          <table id="tabela">
@@ -188,7 +187,8 @@
       <!-- Script principal: conecta ao Firebase e monta tabela -->
       <script type="module">
          import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-         import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+         import { getFirestore, collection, getDocs, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+         
          
          // === Firebase config ===
          const firebaseConfig = {
@@ -230,9 +230,25 @@
                      <td>${r.instrucao||""}</td>
                      <td>${r.producao||""}</td>
                      <td>${r.dtProduto||""}</td>
-                     <td contenteditable="true">${r.observacoes||""}</td>
+                    <td contenteditable="true" data-id="${r.id}">${r.observacoes||""}</td>
+         
                   `;
                   tabela.appendChild(linha);
+         
+                  linha.querySelectorAll("td[contenteditable='true']").forEach(td => {
+         td.addEventListener("blur", async () => {
+         const novoTexto = td.innerText.trim();
+         const docId = td.dataset.id;
+         if (!docId) return;
+         try {
+         await updateDoc(doc(db,"invoices",docId), { observacoes: novoTexto });
+         console.log("✔ Observação salva:", novoTexto);
+         } catch (e) {
+         console.error("❌ Erro ao salvar:", e);
+         }
+         });
+         });
+         
                });
             }
          }
@@ -245,7 +261,8 @@
             );
             const querySnapshot = await getDocs(q);
          
-            querySnapshot.forEach(doc => registros.push(doc.data()));
+            querySnapshot.forEach(d => registros.push({ id: d.id, ...d.data() }));
+         
          
             // 🔹 Ordenar pelo campo embarque (assumindo formato dd/mm/yyyy em texto)
             registros.sort((a,b) => {
@@ -315,6 +332,7 @@
             XLSX.utils.book_append_sheet(wb, ws, "Invoices");
             XLSX.writeFile(wb,"Lista_Invoices_Filtrada.xlsx");
          });
+         
       </script>
    </body>
 </html>
