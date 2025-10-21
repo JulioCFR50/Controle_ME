@@ -391,8 +391,12 @@
                   <tr>
                      <th>Invoice</th>
                      <th>PO#</th>
-                     <th>DT Faturamento</th>
-                     <th>DT Carregamento</th>
+                     <th>DT Faturamento
+                    <button id="btnOrdenarDtFat" style="background:none;border:none;color:white;cursor:pointer;">🔄</button>
+                    </th>
+                    <th>DT Carregamento
+                    <button id="btnOrdenarDtCar" style="background:none;border:none;color:white;cursor:pointer;">🔄</button>
+                    </th>
                      <th>Dead-Line Draft</th>
                      <th>Dead-line VGM</th>
                      <th>Dead-line Carga</th>
@@ -703,6 +707,34 @@
              ordemDtEmbarqueCrescente = !ordemDtEmbarqueCrescente;
              renderTabela(lista);
          });
+
+         // ======= Ordenar por DT Faturamento =======
+document.getElementById("btnOrdenarDtFat").addEventListener("click", () => {
+    const lista = [...listaFiltrada()]; 
+    lista.sort((a, b) => {
+        const A = parseDDMMYYYY(a.dtFaturamento);
+        const B = parseDDMMYYYY(b.dtFaturamento);
+        if (A === 0 && B === 0) return 0;
+        if (A === 0) return 1;
+        if (B === 0) return -1;
+        return A - B;
+    });
+    renderTabela(lista);
+});
+
+// ======= Ordenar por DT Carregamento =======
+document.getElementById("btnOrdenarDtCar").addEventListener("click", () => {
+    const lista = [...listaFiltrada()]; 
+    lista.sort((a, b) => {
+        const A = parseDDMMYYYY(a.dtCarregamento);
+        const B = parseDDMMYYYY(b.dtCarregamento);
+        if (A === 0 && B === 0) return 0;
+        if (A === 0) return 1;
+        if (B === 0) return -1;
+        return A - B;
+    });
+    renderTabela(lista);
+});
          
          
          // ======= Destaque ao clicar na linha =======
@@ -712,6 +744,7 @@
              document.querySelectorAll("#listaInvoices tbody tr").forEach(tr => tr.classList.remove("ativo"));
              linha.classList.add("ativo");
          });
+         
          
          // ======= Expor editarInvoice =======
          window.editarInvoice = async function(invoiceBusca) {
