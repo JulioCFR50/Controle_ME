@@ -146,6 +146,7 @@ button:hover {
       <button id="btnSelecionarTudo">Selecionar Tudo</button>
       <button id="btnLimparSelecao">Limpar Seleção</button>
       <button id="btnExportExcel">Exportar Selecionadas para Excel</button>
+      <button id="btnPrint">Imprimir Tela Completa</button>
   </div>
 
   <label for="inputInvoice">Pesquisar Invoice(s) (vírgula ou espaço):</label><br>
@@ -175,6 +176,9 @@ button:hover {
         </table>
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 let planilhaInvoices = [];
@@ -309,5 +313,44 @@ inputInvoice.addEventListener("input", ()=>{
 });
 </script>
 
+<script>
+document.getElementById("btnPrint").addEventListener("click", async () => {
+    const elemento = document.body;  // CAPTURA A TELA TODA
+
+    // Screenshot da página inteira
+    const canvas = await html2canvas(elemento, {
+        scale: 2,
+        useCORS: true,
+        scrollY: -window.scrollY
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+
+    const { jsPDF } = window.jspdf;
+
+    // PDF EM PAISAGEM (HORIZONTAL)
+    const pdf = new jsPDF("l", "mm", "a4");  // <-- AQUI FICA HORIZONTAL
+
+    // Dimensões do PDF em horizontal
+    const imgWidth = 295;  // Largura da página em landscape
+    const pageHeight = 210; // Altura da página
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let alturaRestante = imgHeight;
+    let posicao = 0;
+
+    pdf.addImage(imgData, "PNG", 0, posicao, imgWidth, imgHeight);
+    alturaRestante -= pageHeight;
+
+    while (alturaRestante > 0) {
+        pdf.addPage();
+        posicao = alturaRestante - imgHeight;
+        pdf.addImage(imgData, "PNG", 0, posicao, imgWidth, imgHeight);
+        alturaRestante -= pageHeight;
+    }
+
+    pdf.save("Relatorio_Horizontal.pdf");
+});
+</script>
 </body>
 </html>

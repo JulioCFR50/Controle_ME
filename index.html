@@ -334,6 +334,8 @@
                <button class="excluir" id="btnExcluir">Excluir</button>
                <button class="btn-lista" id="btnConsultar">Consultar Invoice</button>
                <button class="btn-lista" id="btnBuscarLista">Pesquisar e Editar</button>
+               <button class="btn-lista" id="btnPDF">Gerar PDF</button>
+               <button class="btn-lista" id="btnExcel">Baixar Excel</button>
             </div>
             <form id="formInvoice">
                <div><label for="invoice">INVOICE</label><input type="text" id="invoice"></div>
@@ -818,5 +820,49 @@
          lista.classList.remove('full-height');
          });
       </script>
+
+        <!-- BIBLIOTECAS PARA PDF / EXCEL -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+        <script>
+        document.getElementById("btnPDF").addEventListener("click", async () => {
+            const elemento = document.querySelector("#listaInvoices");
+
+            // tira screenshot
+            const canvas = await html2canvas(elemento, {
+                scale: 2,
+                useCORS: true
+            });
+
+            const imgData = canvas.toDataURL("image/png");
+
+            const pdf = new jspdf.jsPDF("l", "pt", "a4");
+
+            const paginaLargura = pdf.internal.pageSize.getWidth();
+            const imgAltura = canvas.height * (paginaLargura / canvas.width);
+
+            pdf.addImage(imgData, "PNG", 0, 0, paginaLargura, imgAltura);
+            pdf.save("relatorio_ME.pdf");
+        });
+        </script>
+
+        <script>
+        document.getElementById("btnExcel").addEventListener("click", () => {
+            const tabela = document.querySelector("#listaInvoices table");
+
+            // Clonar apenas linhas visíveis
+            const linhasVisiveis = [...tabela.querySelectorAll("tr")]
+                .filter(row => row.offsetParent !== null) // apenas visíveis
+                .map(row => [...row.children].map(col => col.innerText));
+
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(linhasVisiveis);
+
+            XLSX.utils.book_append_sheet(wb, ws, "Relatório");
+            XLSX.writeFile(wb, "relatorio_ME.xlsx");
+        });
+        </script>
    </body>
 </html>
