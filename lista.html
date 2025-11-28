@@ -220,19 +220,19 @@
                dados.forEach(r => {
                   const linha = document.createElement("tr");
                   linha.innerHTML = `
-                     <td>${r.invoice||""}</td>
-                     <td>${r.po||""}</td>
-                     <td>${r.dtFaturamento||""}</td>
-                     <td>${r.dtCarregamento||""}</td>
-                     <td>${r.draft||""}</td>
-                     <td>${r.carga||""}</td>
-                     <td>${r.embarque||""}</td>
-                     <td>${r.status||""}</td>
-                     <td>${r.booking||""}</td>
-                     <td>${r.instrucao||""}</td>
-                     <td>${r.producao||""}</td>
-                     <td>${r.dtProduto||""}</td>
-                     <td contenteditable="true" data-id="${r.id}">${r.observacoes||""}</td>         
+                     <td>${r.invoice||""}
+                     <td>${r.po||""}
+                     <td>${r.dtFaturamento||""}
+                     <td>${r.dtCarregamento||""}
+                     <td>${r.draft||""}
+                     <td>${r.carga||""}
+                     <td>${r.embarque||""}
+                     <td>${r.status||""}
+                     <td>${r.booking||""}
+                     <td>${r.instrucao||""}
+                     <td>${r.producao||""}
+                     <td>${r.dtProduto||""}
+                     <td contenteditable="true" data-id="${r.id}">${r.observacoes||""}         
                   `;
                   tabela.appendChild(linha);
          
