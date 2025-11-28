@@ -379,9 +379,8 @@
                   </select>
                </div>
                <div><label for="dtProduto">Prontidão do Pedido</label><input type="text" id="dtProduto"></div>
-                <div><label for="quarentena">Quarentena</label><input type="text" id="quarentena">
-        </div>
-
+               <div><label for="quarentena">Quarentena</label><input type="text" id="quarentena">
+               </div>
                <div><label for="observacoes">Observações</label><input type="text" id="observacoes"></div>
             </form>
          </div>
@@ -390,14 +389,13 @@
                <thead>
                   <tr>
                      <th>Invoice</th>
-                     <th>Booking #
-</th>
+                     <th>Booking #</th>
                      <th>DT Faturamento
-                    <button id="btnOrdenarDtFat" style="background:none;border:none;color:white;cursor:pointer;">🔄</button>
-                    </th>
-                    <th>DT Carregamento
-                    <button id="btnOrdenarDtCar" style="background:none;border:none;color:white;cursor:pointer;">🔄</button>
-                    </th>
+                        <button id="btnOrdenarDtFat" style="background:none;border:none;color:white;cursor:pointer;">🔄</button>
+                     </th>
+                     <th>DT Carregamento
+                        <button id="btnOrdenarDtCar" style="background:none;border:none;color:white;cursor:pointer;">🔄</button>
+                     </th>
                      <th>Dead-Line Draft</th>
                      <th>Dead-line VGM</th>
                      <th>Dead-line Carga</th>
@@ -480,7 +478,7 @@
                     <td>${r.observacoes || ""}</td>
                     <td><button onclick="editarInvoice('${(r.invoice || "").replace(/'/g, "\\'")}')">✏️ Editar</button></td>
                 `;
-
+         
                  tbody.appendChild(tr);
              });
          }
@@ -506,19 +504,19 @@
          
          
          // ======= Carregar do Firestore =======
-        async function atualizarLista() {
-    const snap = await getDocs(collection(db, "invoices"));
-    cacheInvoices = [];
-    snap.forEach(docSnap => {
-        const data = docSnap.data();
-        if (data.status === "Pendente") {   // só pendentes
+         async function atualizarLista() {
+         const snap = await getDocs(collection(db, "invoices"));
+         cacheInvoices = [];
+         snap.forEach(docSnap => {
+         const data = docSnap.data();
+         if (data.status === "Pendente") {   // só pendentes
             cacheInvoices.push(data);
-        }
-    });
-    renderTabela(listaFiltrada());
-    updateTopAreaHeight();
-}
-
+         }
+         });
+         renderTabela(listaFiltrada());
+         updateTopAreaHeight();
+         }
+         
          
          // ======= Funções Data/Hora =======
          function formatarDataHora(input) {
@@ -708,35 +706,34 @@
              ordemDtEmbarqueCrescente = !ordemDtEmbarqueCrescente;
              renderTabela(lista);
          });
-
-         // ======= Ordenar por DT Faturamento =======
-document.getElementById("btnOrdenarDtFat").addEventListener("click", () => {
-    const lista = [...listaFiltrada()]; 
-    lista.sort((a, b) => {
-        const A = parseDDMMYYYY(a.dtFaturamento);
-        const B = parseDDMMYYYY(b.dtFaturamento);
-        if (A === 0 && B === 0) return 0;
-        if (A === 0) return 1;
-        if (B === 0) return -1;
-        return A - B;
-    });
-    renderTabela(lista);
-});
-
-// ======= Ordenar por DT Carregamento =======
-document.getElementById("btnOrdenarDtCar").addEventListener("click", () => {
-    const lista = [...listaFiltrada()]; 
-    lista.sort((a, b) => {
-        const A = parseDDMMYYYY(a.dtCarregamento);
-        const B = parseDDMMYYYY(b.dtCarregamento);
-        if (A === 0 && B === 0) return 0;
-        if (A === 0) return 1;
-        if (B === 0) return -1;
-        return A - B;
-    });
-    renderTabela(lista);
-});
          
+         // ======= Ordenar por DT Faturamento =======
+         document.getElementById("btnOrdenarDtFat").addEventListener("click", () => {
+         const lista = [...listaFiltrada()]; 
+         lista.sort((a, b) => {
+         const A = parseDDMMYYYY(a.dtFaturamento);
+         const B = parseDDMMYYYY(b.dtFaturamento);
+         if (A === 0 && B === 0) return 0;
+         if (A === 0) return 1;
+         if (B === 0) return -1;
+         return A - B;
+         });
+         renderTabela(lista);
+         });
+         
+         // ======= Ordenar por DT Carregamento =======
+         document.getElementById("btnOrdenarDtCar").addEventListener("click", () => {
+         const lista = [...listaFiltrada()]; 
+         lista.sort((a, b) => {
+         const A = parseDDMMYYYY(a.dtCarregamento);
+         const B = parseDDMMYYYY(b.dtCarregamento);
+         if (A === 0 && B === 0) return 0;
+         if (A === 0) return 1;
+         if (B === 0) return -1;
+         return A - B;
+         });
+         renderTabela(lista);
+         });       
          
          // ======= Destaque ao clicar na linha =======
          document.addEventListener("click", function(e) {
